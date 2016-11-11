@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.agrona:Agrona:0.5.5">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.agrona/Agrona/0.5.5/5a576d17c57c5c85b9a1ce19f030746e214e281b/Agrona-0.5.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.agrona/Agrona/0.5.5/754791c42548c9c4d19d649aa226a40d457ab7b9/Agrona-0.5.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

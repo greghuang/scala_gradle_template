@@ -1,0 +1,97 @@
+group 'trendmicro.coretech.spn'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'scala'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
+
+ext {
+    scalaMajorVersion = '2.11'
+    scalaVersion = "${scalaMajorVersion}.7"
+    akkaVersion = '2.4.12'
+    sparkVersion = '1.6.2'
+    kafkaMajorVersion = '0.10'
+    kafkaVersion = "${kafkaMajorVersion}.1.0"
+}
+
+dependencies {
+    // Scala
+    compile "org.scala-lang:scala-library:$scalaVersion"
+
+    //Akka
+    compile "com.typesafe.akka:akka-actor_${scalaMajorVersion}:${akkaVersion}"
+    compile "com.typesafe.akka:akka-remote_${scalaMajorVersion}:${akkaVersion}"
+    compile "com.typesafe.akka:akka-cluster_${scalaMajorVersion}:${akkaVersion}"
+    compile "com.typesafe.akka:akka-slf4j_${scalaMajorVersion}:${akkaVersion}"
+
+    // Akka Stream
+    compile "com.typesafe.akka:akka-stream_${scalaMajorVersion}:${akkaVersion}"
+    compile "com.typesafe.akka:akka-stream-kafka_${scalaMajorVersion}:0.13"
+    compile "org.apache.kafka:kafka-clients:${kafkaVersion}"
+
+    compile "org.json4s:json4s-jackson_${scalaMajorVersion}:3.2.10"
+    compile "com.typesafe.scala-logging:scala-logging-slf4j_${scalaMajorVersion}:2.1.2"
+    compile "ch.qos.logback:logback-classic:1.1.3"
+    compile "org.clapper:argot_${scalaMajorVersion}:1.0.3"
+
+    // Testing
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile "com.typesafe.akka:akka-testkit_${scalaMajorVersion}:${akkaVersion}"
+    testCompile "com.typesafe.akka:akka-stream-testkit_${scalaMajorVersion}:${akkaVersion}"
+    testCompile "net.manub:scalatest-embedded-kafka_${scalaMajorVersion}:0.9.0"
+}
+
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.useAnt = false
+
+    configure(scalaCompileOptions.forkOptions) {
+        memoryMaximumSize = '1g'
+        jvmArgs = ['-XX:MaxPermSize=512m']
+    }
+}
+
+[compileScala, compileTestScala]*.scalaCompileOptions.collect { options ->
+    options.useCompileDaemon = true
+}
+
+[compileJava, compileTestJava]*.options.collect { options ->
+    options.compilerArgs.add '-Xlint:unchecked'
+}
+
+task scalaTest(dependsOn: ['testClasses'], type: JavaExec) {
+    main = 'org.scalatest.tools.Runner'
+    classpath = sourceSets.test.runtimeClasspath
+    jvmArgs = ['-Xmx2048m', '-XX:MaxPermSize=2048m', '-XX:+CMSClassUnloadingEnabled']
+
+    args = ['-R', 'build/classes/test',
+            '-oF',
+            '-u', 'build/test-results',
+            '-h', 'build/reports/scalatests',
+            '-l', 'org.scalatest.tags.Slow',
+            '-l', 'com.trend.spn.holmes.utbase.annotation.TagIntegrationTest']
+
+    def testSuite = System.getProperty("test.single")
+    if (testSuite != null) {
+        args += ['-s', testSuite]
+    }
+
+    def testCase = System.getProperty("test.single.case")
+    if (testCase != null) {
+        args += ['-z', testCase]
+    }
+}

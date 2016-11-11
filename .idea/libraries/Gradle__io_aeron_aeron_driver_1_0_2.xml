@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.aeron:aeron-driver:1.0.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.aeron/aeron-driver/1.0.2/344747e230d5f5c89da6f7e4a00b7afd4203a283/aeron-driver-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.aeron/aeron-driver/1.0.2/a8f213ed129183e315df8008739137afaecee5d9/aeron-driver-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
